@@ -36,6 +36,9 @@ public class VHouse {
     private boolean bdooropen = false;
     private boolean blighton = false;
     private boolean balarmon = false;
+    private boolean bwopen = false;
+    
+    long timer;
 
     static VHouse vh = new VHouse();
 
@@ -43,6 +46,7 @@ public class VHouse {
 //        System.out.println(vh.bdooropen);
 //        ChangeStat("bdooropen", true);
 //        System.out.println(vh.bdooropen);
+        
     }
 
     public VHouse() {
@@ -88,8 +92,8 @@ public class VHouse {
         setLabelImage(alarmon, "/images/AlarmChimneyOn.png");
         setLabelImage(doorclosedlightoff, "/images/DoorClosedLightInsideOff.png");
         setLabelImage(dooropenedlightoff, "/images/DoorOpenLightInsideOff.png");
-        setLabelImage(doorclosedlighton, "/images/AlarmChimneyOn.png");
-        setLabelImage(dooropenedlighton, "/images/AlarmChimneyOn.png");
+        setLabelImage(doorclosedlighton, "/images/DoorClosedLightInsideOn.png");
+        setLabelImage(dooropenedlighton, "/images/DoorOpenLightInsideOn.png");
         setLabelImage(smallwindowlightoff, "/images/SmallWindowLightInOff.png");
         setLabelImage(smallwindowlighton, "/images/SmallWindowLightInOn.png");
         setLabelImage(windowclosed, "/images/windowOUTclosed.png");
@@ -121,25 +125,32 @@ public class VHouse {
         jf.pack();
 
         bg.setVisible(true);
-        alarmoff.setVisible(true);
-        dooropenedlightoff.setVisible(true);
-        smallwindowlightoff.setVisible(true);
-        windowclosed.setVisible(true);
+        //alarmoff.setVisible(true);
+        //dooropenedlightoff.setVisible(true);
+        //smallwindowlightoff.setVisible(true);
+        //windowclosed.setVisible(true);
         //Actions();
+        ChangeStat("bwopen", true);
+        ChangeStat("bdooropen", false);
+        ChangeStat("balarmon", true);
+        ChangeStat("blighton", false); 
+        checkLoop();
     }
 
     public void ChangeStat(String what, boolean stat) {
         if (what.equals("bdooropen")) {
             this.bdooropen = stat;
         }
-        if (what.equals("blighton")) {
+        else if(what.equals("bwopen")){
+            this.bwopen=stat;
+        }
+        else if (what.equals("blighton")) {
             this.blighton = stat;
         }
-        if (what.equals("balarmon")) {
+        else if (what.equals("balarmon")) {
             this.balarmon = stat;
         } else {
             System.out.println("No such boolean. Make sure to call it properly");
-
         }
     }
 
@@ -180,6 +191,82 @@ public class VHouse {
         if (!balarmon) {
             this.alarmon.setVisible(false);
             this.alarmoff.setVisible(true);
+        }
+    }
+
+    public void checkLoop() {
+        while (true) {
+            if (this.balarmon) {
+                this.timer = System.currentTimeMillis();
+                //System.out.println("in actions loop");
+                if (System.currentTimeMillis() - this.timer > 200) {
+                    if (!this.alarmon.isVisible()) {
+                        this.alarmoff.setVisible(false);
+                        this.alarmon.setVisible(true);
+                    } else if(this.alarmon.isVisible()){
+                        this.alarmoff.setVisible(true);
+                        this.alarmon.setVisible(false);
+                    }
+                    this.timer = System.currentTimeMillis();
+                }
+            }
+            else if (!this.balarmon) {
+                this.alarmon.setVisible(false);
+                this.alarmoff.setVisible(true);
+            }
+
+            if (this.blighton) {
+                this.smallwindowlighton.setVisible(true);
+                this.smallwindowlightoff.setVisible(false);
+                if (bdooropen) {
+                    this.doorclosedlightoff.setVisible(false);
+                    this.doorclosedlighton.setVisible(false);
+                    this.dooropenedlightoff.setVisible(false);
+                    this.dooropenedlighton.setVisible(true);
+                }
+                else if (!this.bdooropen) {
+                    this.doorclosedlightoff.setVisible(false);
+                    this.doorclosedlighton.setVisible(true);
+                    this.dooropenedlightoff.setVisible(false);
+                    this.dooropenedlighton.setVisible(false);
+                }
+                if (bwopen) {
+                    this.windowclosed.setVisible(false);
+                    this.windowopenlightoff.setVisible(false);
+                    this.windowopenlighton.setVisible(true);
+                }
+                else if (!this.bwopen) {
+                    this.windowclosed.setVisible(true);
+                    this.windowopenlightoff.setVisible(false);
+                    this.windowopenlighton.setVisible(false);
+                }
+            }
+            else if (!this.blighton) {
+                this.smallwindowlighton.setVisible(false);
+                this.smallwindowlightoff.setVisible(true);
+                if (this.bdooropen) {
+                    this.doorclosedlightoff.setVisible(false);
+                    this.doorclosedlighton.setVisible(false);
+                    this.dooropenedlightoff.setVisible(true);
+                    this.dooropenedlighton.setVisible(false);
+                }
+                else if (!this.bdooropen) {
+                    this.doorclosedlightoff.setVisible(true);
+                    this.doorclosedlighton.setVisible(false);
+                    this.dooropenedlightoff.setVisible(false);
+                    this.dooropenedlighton.setVisible(false);
+                }
+                if (this.bwopen) {
+                    this.windowclosed.setVisible(false);
+                    this.windowopenlightoff.setVisible(true);
+                    this.windowopenlighton.setVisible(false);
+                }
+                else if (!this.bwopen) {
+                    this.windowclosed.setVisible(true);
+                    this.windowopenlightoff.setVisible(false);
+                    this.windowopenlighton.setVisible(false);
+                }
+            }
         }
     }
 }
