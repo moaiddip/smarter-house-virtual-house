@@ -195,10 +195,9 @@ public class VHouse {
     }
 
     public void checkLoop() {
+        this.timer = System.currentTimeMillis();
         while (true) {
             if (this.balarmon) {
-                this.timer = System.currentTimeMillis();
-                //System.out.println("in actions loop");
                 if (System.currentTimeMillis() - this.timer > 200) {
                     if (!this.alarmon.isVisible()) {
                         this.alarmoff.setVisible(false);
