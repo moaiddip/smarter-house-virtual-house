@@ -31,12 +31,19 @@ public class VHouse {
     private JLabel windowclosed;
     private JLabel smallwindowlightoff;
     private JLabel smallwindowlighton;
+    private JLabel tvOn;
+    private JLabel tvOff;
+    private JLabel coffeeOn;
+    private JLabel coffeeOff;
+    private JLabel darkness;
 
     //booleans holding statuses
     private boolean bdooropen = false;
     private boolean blighton = false;
     private boolean balarmon = false;
     private boolean bwopen = false;
+    private boolean bcoffee = false;
+    private boolean btv = false;
     
     long timer;
 
@@ -75,7 +82,19 @@ public class VHouse {
         labels.add(smallwindowlightoff);
         smallwindowlighton = new JLabel();
         labels.add(smallwindowlighton);
-
+        tvOn = new JLabel();
+        labels.add(tvOn);
+        tvOff = new JLabel();
+        labels.add(tvOff);
+        coffeeOn = new JLabel();
+        labels.add(coffeeOn);
+        coffeeOff = new JLabel();
+        labels.add(coffeeOff);
+        darkness = new JLabel();
+        labels.add(darkness);
+        
+        
+                
         alarmoff.setBounds(183, -20, 280, 240);
         alarmon.setBounds(183, -20, 280, 240);
         doorclosedlightoff.setBounds(395, 379, 90, 148);
@@ -87,6 +106,12 @@ public class VHouse {
         windowclosed.setBounds(210, 345, 161, 97);
         windowopenlightoff.setBounds(210, 345, 161, 97);
         windowopenlighton.setBounds(210, 345, 161, 97);
+        tvOff.setBounds(700,225,150,109);
+        tvOn.setBounds(700,225,150,109);
+        coffeeOff.setBounds(853,193,140,135);
+        coffeeOn.setBounds(853,193,140,135);
+        darkness.setBounds(680,0,680,698);
+
 
         setLabelImage(alarmoff, "/images/AlarmChimneyOff.png");
         setLabelImage(alarmon, "/images/AlarmChimneyOn.png");
@@ -99,6 +124,11 @@ public class VHouse {
         setLabelImage(windowclosed, "/images/windowOUTclosed.png");
         setLabelImage(windowopenlightoff, "/images/windowOUTopenLightInOFF.png");
         setLabelImage(windowopenlighton, "/images/windowOUTopenLightInON.png");
+        setLabelImage(tvOff,"/images/tvoff.png");
+        setLabelImage(tvOn,"/images/tvon.png");
+        setLabelImage(coffeeOff,"/images/coffeeoff.png");
+        setLabelImage(coffeeOn,"/images/coffeeon.png");
+        setLabelImage(darkness,"/images/black.png");
 
         //BACKGROUND
         JLabel bg = new JLabel();
@@ -130,10 +160,20 @@ public class VHouse {
         //smallwindowlightoff.setVisible(true);
         //windowclosed.setVisible(true);
         //Actions();
+        /*
+        tvOff.setVisible(false);
+        tvOn.setVisible(true);
+        coffeeOff.setVisible(false);
+        coffeeOn.setVisible(true);
+        darkness.setVisible(true);
+                */
+        
         ChangeStat("bwopen", true);
         ChangeStat("bdooropen", false);
-        ChangeStat("balarmon", true);
-        ChangeStat("blighton", false); 
+        ChangeStat("balarmon", false);
+        ChangeStat("blighton", true); 
+        ChangeStat("bcoffee", true);
+        ChangeStat("btv", true);
         checkLoop();
     }
 
@@ -149,7 +189,14 @@ public class VHouse {
         }
         else if (what.equals("balarmon")) {
             this.balarmon = stat;
-        } else {
+        }
+        else if (what.equals("bcoffee")) {
+            this.bcoffee = stat;
+        }
+         else if (what.equals("btv")) {
+            this.btv = stat;
+        }
+        else {
             System.out.println("No such boolean. Make sure to call it properly");
         }
     }
@@ -170,10 +217,12 @@ public class VHouse {
 
     private void Actions() {
         ChangeStat("balarmon", true);
-        long timer = System.currentTimeMillis();
+        long timer = System.currentTimeMillis()/1000;
         while (balarmon) {
+            System.out.println("Im here.");
             //System.out.println("in actions loop");
-            if (System.currentTimeMillis() - timer > 200) {
+            if (System.currentTimeMillis()/1000 - timer >= 2) {
+                System.out.println("Inside the if statement.");
                 if (!this.alarmon.isVisible()) {
                     this.alarmoff.setVisible(false);
                     this.alarmon.setVisible(true);
@@ -217,6 +266,24 @@ public class VHouse {
             if (this.blighton) {
                 this.smallwindowlighton.setVisible(true);
                 this.smallwindowlightoff.setVisible(false);
+                this.darkness.setVisible(false);
+                
+                if(bcoffee){
+                    this.coffeeOn.setVisible(true);
+                    this.coffeeOff.setVisible(false);
+                }
+                else if(!bcoffee){
+                    this.coffeeOn.setVisible(false);
+                    this.coffeeOff.setVisible(true);
+                }
+                if(btv){
+                    this.tvOn.setVisible(true);
+                    this.tvOff.setVisible(false);
+                }
+                else if(!btv){
+                    this.tvOn.setVisible(false);
+                    this.tvOff.setVisible(true);
+                }
                 if (bdooropen) {
                     this.doorclosedlightoff.setVisible(false);
                     this.doorclosedlighton.setVisible(false);
@@ -243,6 +310,7 @@ public class VHouse {
             else if (!this.blighton) {
                 this.smallwindowlighton.setVisible(false);
                 this.smallwindowlightoff.setVisible(true);
+                this.darkness.setVisible(true);
                 if (this.bdooropen) {
                     this.doorclosedlightoff.setVisible(false);
                     this.doorclosedlighton.setVisible(false);
