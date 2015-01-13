@@ -169,9 +169,9 @@ public class VHouse {
                 */
         
         ChangeStat("bwopen", true);
-        ChangeStat("bdooropen", false);
-        ChangeStat("balarmon", false);
-        ChangeStat("blighton", true); 
+        ChangeStat("bdooropen", true);
+        ChangeStat("balarmon", true);
+        ChangeStat("blighton", false); 
         ChangeStat("bcoffee", true);
         ChangeStat("btv", true);
         checkLoop();
@@ -203,8 +203,7 @@ public class VHouse {
 
     private void setLabelImage(JLabel label, String imgPath) {
         try {
-            InputStream imgStream = VHouse.class
-                    .getClass().getResourceAsStream(imgPath);
+            InputStream imgStream = VHouse.class.getClass().getResourceAsStream(imgPath);
             BufferedImage loadedImg = ImageIO.read(imgStream);
             ImageIcon img = new ImageIcon(loadedImg);
 
